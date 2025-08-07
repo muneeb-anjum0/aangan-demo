@@ -77,9 +77,12 @@ const FooterSection = (): JSX.Element => {
                 <div
                   className={`flex flex-col max-w-full lg:max-w-[740px] gap-6 sm:gap-8 md:gap-10 lg:gap-12
                     transition-all duration-[1800ms] ease-out delay-500
-                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}`}
+                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
+                    w-full
+                  `}
+                  style={{ minWidth: 0 }}
                 >
-                  <div className="relative h-[32px] w-[154px] sm:h-[36px] sm:w-[174px] md:h-[40px] md:w-[193px] mx-auto lg:mx-0">
+                  <div className="relative h-[32px] w-[154px] sm:h-[36px] sm:w-[174px] md:h-[40px] md:w-[193px] mx-auto lg:mx-0 min-w-0">
                     <a
                       href="/"
                       className="absolute w-[104px] h-[30px] sm:w-[118px] sm:h-[34px] md:w-[130px] md:h-[37px] top-[2px] left-[50px] sm:left-[56px] md:left-[62px]"
@@ -98,7 +101,7 @@ const FooterSection = (): JSX.Element => {
                     />
                   </div>
 
-                  <p className="text-[#212121] text-xs sm:text-sm md:text-base text-center lg:text-left">
+                  <p className="text-[#212121] text-xs sm:text-sm md:text-base text-center lg:text-left break-words">
                     Aangan empowers you to track your cycle with confidence —
                     offering intelligent insights, timely reminders, and
                     personalized health tips. From your first period to every
@@ -108,8 +111,9 @@ const FooterSection = (): JSX.Element => {
 
                   <div className={`flex items-center justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4
                     transition-all duration-1000 ease-out delay-700
-                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}`}
-                  >
+                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
+                    w-full
+                  `}>
                     <img
                       className="w-6 h-6"
                       alt="Facebook"
@@ -132,7 +136,9 @@ const FooterSection = (): JSX.Element => {
                 <div
                   className={`flex flex-col sm:flex-row lg:flex-row gap-6 lg:gap-12 justify-center lg:justify-start
                     transition-all duration-[1800ms] ease-out delay-700
-                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}`}
+                    ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
+                    w-full
+                  `}
                 >
                   <div className="flex flex-col gap-3 text-center lg:text-left">
                     <h3 className="text-lg font-medium text-[#212121]">
@@ -174,18 +180,21 @@ const FooterSection = (): JSX.Element => {
 
           {/* Background image is NOT animated */}
           <img
-            className="absolute w-full h-full top-0 left-0 z-0 pointer-events-none opacity-50"
+            className="absolute w-full h-full top-0 left-0 z-0 pointer-events-none opacity-50 select-none"
             alt="Background pattern"
             src={footerBackgroundPattern}
+            style={{ objectFit: 'cover', minHeight: 0, minWidth: 0 }}
           />
 
           {/* Copyright bar animation */}
           <div
             className={`w-full h-[38px] md:h-[44px] bg-[#212121] flex items-center justify-center px-4 relative z-10
               transition-all duration-[1500ms] ease-out delay-1000
-              ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}`}
+              ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
+              min-w-0
+            `}
           >
-            <p className="text-[#ff9bc5] text-xs md:text-sm text-center">
+            <p className="text-[#ff9bc5] text-xs md:text-sm text-center break-words">
               © 2025 Aangan. All rights reserved.
             </p>
           </div>

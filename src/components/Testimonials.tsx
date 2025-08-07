@@ -100,7 +100,7 @@ const Testimonials: React.FC = () => {
 
   return (
     <section
-      className="w-full py-8 px-6 md:px-16"
+      className="w-full py-8 px-4 sm:px-6 md:px-16"
       style={{ backgroundColor: '#FEDDE8' }}
     >
       <div className="max-w-7xl mx-auto">
@@ -128,16 +128,16 @@ const Testimonials: React.FC = () => {
         </motion.h2>
       </div>
 
-      {/* Horizontally scrollable testimonials grid */}
+      {/* Responsive testimonials grid: horizontal scroll on desktop, vertical stack on mobile */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto overflow-y-hidden gap-6 mb-12 pb-4 hide-scrollbar px-6 md:px-16"
-        style={{ maxHeight: '340px' }}
+        className="flex flex-col gap-6 mb-12 pb-4 hide-scrollbar px-2 sm:px-6 md:px-16
+          sm:flex-row sm:overflow-x-auto sm:overflow-y-hidden sm:max-h-[340px]"
       >
         {testimonials.map((testimonial, idx) => (
           <motion.div
             key={testimonial.id}
-            className="rounded-3xl px-16 py-6 shadow-sm border border-opacity-50 flex flex-col h-[300px] flex-shrink-0 w-[360px]"
+            className="rounded-3xl px-6 py-6 shadow-sm border border-opacity-50 flex flex-col h-auto sm:h-[300px] flex-shrink-0 w-full sm:w-[360px]"
             style={{ backgroundColor: '#fde6ee', borderColor: '#ff9cc5' }}
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}

@@ -23,11 +23,26 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
   const [scrollCount, setScrollCount] = useState(0);
   const [locked, setLocked] = useState(true);
   const lastScrollY = useRef(window.scrollY);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Detect mobile (width <= 768px)
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setLocked(false);
+      setScrollCount(11); // Show all content on mobile
+      return;
+    }
     let swipeActive = false;
     let swipeTimeout: ReturnType<typeof setTimeout> | null = null;
-    const SWIPE_TIMEOUT = 150;
+    const SWIPE_TIMEOUT = 180;
+    const DELTA_Y_THRESHOLD = 40; // Ignore micro-scrolls (touchpad)
 
     const docHeight = () => document.documentElement.scrollHeight - window.innerHeight;
     const lockScroll = () => {
@@ -40,44 +55,45 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
     };
 
     const onWheel = (e: WheelEvent) => {
-      // If unlocked, stop counting scrolls
       if (!locked) return;
+
+      // Only respond to significant scrolls (ignore touchpad micro-scrolls)
+      if (Math.abs(e.deltaY) < DELTA_Y_THRESHOLD) return;
 
       const dHeight = docHeight();
       const scrollTop = window.scrollY;
       const maxScroll = Math.round(dHeight * 0.28);
 
+      // Only increment/decrement by 1 per event, regardless of deltaY size
+      const scrollDirection = e.deltaY > 0 ? 1 : (e.deltaY < 0 ? -1 : 0);
+
       if (locked && scrollTop >= maxScroll - 1) {
-        // Prevent all scroll attempts when locked
         e.preventDefault();
         window.scrollTo({ top: maxScroll });
         lockScroll();
-        // Only count attempted scrolls on first wheel event after inactivity
-        if (e.deltaY > 0 && !swipeActive) {
-          setScrollCount(prev => Math.min(prev + 1, 11));
+        if (!swipeActive && scrollDirection !== 0) {
+          setScrollCount(prev => {
+            if (scrollDirection > 0) return Math.min(prev + 1, 11);
+            if (scrollDirection < 0) return Math.max(prev - 1, 0);
+            return prev;
+          });
           swipeActive = true;
+          if (swipeTimeout) clearTimeout(swipeTimeout);
+          swipeTimeout = setTimeout(() => { swipeActive = false; }, SWIPE_TIMEOUT);
         }
-        // Decrement scrollCount if scrolling up and not already at 0
-        if (e.deltaY < 0 && !swipeActive) {
-          setScrollCount(prev => Math.max(prev - 1, 0));
-          swipeActive = true;
-        }
-        if (swipeTimeout) clearTimeout(swipeTimeout);
-        swipeTimeout = setTimeout(() => { swipeActive = false; }, SWIPE_TIMEOUT);
         return;
       } else {
         unlockScroll();
-        // When unlocked, or not at lock point, only count scrolls if at the lock point (legacy logic)
-        if (e.deltaY > 0 && scrollTop >= maxScroll - 2 && !swipeActive) {
-          setScrollCount(prev => Math.min(prev + 1, 11));
+        if (scrollTop >= maxScroll - 2 && !swipeActive && scrollDirection !== 0) {
+          setScrollCount(prev => {
+            if (scrollDirection > 0) return Math.min(prev + 1, 11);
+            if (scrollDirection < 0) return Math.max(prev - 1, 0);
+            return prev;
+          });
           swipeActive = true;
+          if (swipeTimeout) clearTimeout(swipeTimeout);
+          swipeTimeout = setTimeout(() => { swipeActive = false; }, SWIPE_TIMEOUT);
         }
-        if (e.deltaY < 0 && scrollTop >= maxScroll - 2 && !swipeActive) {
-          setScrollCount(prev => Math.max(prev - 1, 0));
-          swipeActive = true;
-        }
-        if (swipeTimeout) clearTimeout(swipeTimeout);
-        swipeTimeout = setTimeout(() => { swipeActive = false; }, SWIPE_TIMEOUT);
       }
     };
 
@@ -87,7 +103,7 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
       swipeTimeout && clearTimeout(swipeTimeout);
       unlockScroll();
     };
-  }, [locked]);
+  }, [locked, isMobile]);
 
   useEffect(() => {
     onScrollCountChange?.(scrollCount);
@@ -95,6 +111,7 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
   }, [scrollCount, onScrollCountChange]);
 
   useEffect(() => {
+    if (isMobile) return;
     const dHeight = () => document.documentElement.scrollHeight - window.innerHeight;
     const onScroll = () => {
       const scrollTop = window.scrollY;
@@ -118,8 +135,9 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [locked]);
+  }, [locked, isMobile]);
 
+  if (isMobile) return null;
   return (
     <div style={{
       position: "fixed",
@@ -139,22 +157,33 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
 
 const WhyAangan: React.FC = () => {
   const [scrollCount, setScrollCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile (width <= 768px)
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <>
       <ScrollProgress onScrollCountChange={setScrollCount} />
 
-      <section style={{
-        background: 'transparent',
-        minHeight: '105vh',
-        padding: '48px 0',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        position: 'relative',
-        // overflow: 'hidden',
-      }}>
+      <section
+        style={{
+          background: 'transparent',
+          minHeight: isMobile ? undefined : '105vh',
+          padding: isMobile ? '32px 0 24px 0' : '48px 0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          position: 'relative',
+          // overflow: 'hidden',
+        }}
+      >
         {/* Cloud background */}
         <img
             src={cloudImg}
@@ -448,21 +477,24 @@ const WhyAangan: React.FC = () => {
         />
 
         {/* Always show the heading - styled single line, black and pink */}
-        <h2 className="why-aangan-heading" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          fontSize: '2.8rem',
-          fontWeight: 400,
-          marginBottom: '32px',
-          letterSpacing: '-1px',
-          zIndex: 2,
-          lineHeight: 1.1,
-          fontFamily: 'Poppins, Inter, Arial, sans-serif',
-          background: 'none',
-          border: 'none',
-          padding: 0,
-        }}>
+        <h2
+          className="why-aangan-heading"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: isMobile ? 8 : 12,
+            fontSize: isMobile ? '2rem' : '2.8rem',
+            fontWeight: 400,
+            marginBottom: isMobile ? '20px' : '32px',
+            letterSpacing: '-1px',
+            zIndex: 2,
+            lineHeight: 1.1,
+            fontFamily: 'Poppins, Inter, Arial, sans-serif',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+          }}
+        >
           <span className="why-aangan-why">Why</span>
           <span className="why-aangan-pink">
             Aangan
@@ -471,30 +503,57 @@ const WhyAangan: React.FC = () => {
         </h2>
 
         {/* Main content blocks after heading */}
-        {scrollCount < 6 && (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            marginTop: 32,
-            gap: 24,
-            zIndex: 1,
-          }}>
+  {(isMobile || scrollCount < 6) && (
+          <div
+            style={{
+              display: isMobile ? 'block' : 'flex',
+              flexDirection: isMobile ? undefined : 'row',
+              alignItems: isMobile ? undefined : 'center',
+              justifyContent: isMobile ? undefined : 'center',
+              width: '100%',
+              marginTop: isMobile ? 16 : 32,
+              gap: isMobile ? undefined : 24,
+              zIndex: 1,
+            }}
+          >
             {/* Left bubbles */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 24, minWidth: 220 }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: isMobile ? 12 : 24,
+                minWidth: isMobile ? 120 : 220,
+                marginBottom: isMobile ? 12 : 0,
+              }}
+            >
               <img
                 src={bubble1Img}
                 alt="Bubble 1"
                 className={`bubble-fade${scrollCount === 2 ? ' bubble-fade-in' : ''}`}
-                style={{ maxWidth: 180 * 1.8, width: '180%', opacity: scrollCount >= 2 ? 1 : 0, transition: 'opacity 0.7s', position: 'relative', right: 0, top: -80 }}
+                style={{
+                  maxWidth: isMobile ? 120 : 180 * 1.8,
+                  width: isMobile ? '100%' : '180%',
+                  opacity: scrollCount >= 2 ? 1 : 0,
+                  transition: 'opacity 0.7s',
+                  position: 'relative',
+                  right: 0,
+                  top: isMobile ? -30 : -80,
+                }}
               />
               <img
                 src={bubble4Img}
                 alt="Bubble 4"
                 className={`bubble-fade${scrollCount === 3 ? ' bubble-fade-in' : ''}`}
-                style={{ maxWidth: 180 * 1.8, width: '180%', opacity: scrollCount >= 3 ? 1 : 0, transition: 'opacity 0.7s', position: 'relative', right: -60, top: 40 }}
+                style={{
+                  maxWidth: isMobile ? 120 : 180 * 1.8,
+                  width: isMobile ? '100%' : '180%',
+                  opacity: scrollCount >= 3 ? 1 : 0,
+                  transition: 'opacity 0.7s',
+                  position: 'relative',
+                  right: isMobile ? -20 : -60,
+                  top: isMobile ? 10 : 40,
+                }}
               />
             </div>
             {/* Woman in the center */}
@@ -502,28 +561,62 @@ const WhyAangan: React.FC = () => {
               src={womanImg}
               alt="Woman"
               className={`woman-fade${scrollCount === 1 ? ' woman-fade-in' : ''}`}
-              style={{ maxWidth: 320 * 1.2, width: '120%', margin: '0 24px', opacity: scrollCount >= 1 ? 1 : 0, transition: 'opacity 0.7s', position: 'relative', left: 0, top: 80 }}
+              style={{
+                maxWidth: isMobile ? 180 : 320 * 1.2,
+                width: isMobile ? '100%' : '120%',
+                margin: isMobile ? '12px 0' : '0 24px',
+                opacity: scrollCount >= 1 ? 1 : 0,
+                transition: 'opacity 0.7s',
+                position: 'relative',
+                left: 0,
+                top: isMobile ? 20 : 80,
+              }}
             />
             {/* Right bubbles */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 24, minWidth: 220 }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: isMobile ? 12 : 24,
+                minWidth: isMobile ? 120 : 220,
+                marginTop: isMobile ? 12 : 0,
+              }}
+            >
               <img
                 src={bubble2Img}
                 alt="Bubble 2"
                 className={`bubble-fade${scrollCount === 4 ? ' bubble-fade-in' : ''}`}
-                style={{ maxWidth: 180 * 1.8, width: '180%', opacity: scrollCount >= 4 ? 1 : 0, transition: 'opacity 0.7s', position: 'relative', left: 0, top: -80 }}
+                style={{
+                  maxWidth: isMobile ? 120 : 180 * 1.8,
+                  width: isMobile ? '100%' : '180%',
+                  opacity: scrollCount >= 4 ? 1 : 0,
+                  transition: 'opacity 0.7s',
+                  position: 'relative',
+                  left: 0,
+                  top: isMobile ? -30 : -80,
+                }}
               />
               <img
                 src={bubble3Img}
                 alt="Bubble 3"
                 className={`bubble-fade${scrollCount === 5 ? ' bubble-fade-in' : ''}`}
-                style={{ maxWidth: 180 * 1.8, width: '180%', opacity: scrollCount >= 5 ? 1 : 0, transition: 'opacity 0.7s', position: 'relative', left: -16, top: -24 }}
+                style={{
+                  maxWidth: isMobile ? 120 : 180 * 1.8,
+                  width: isMobile ? '100%' : '180%',
+                  opacity: scrollCount >= 5 ? 1 : 0,
+                  transition: 'opacity 0.7s',
+                  position: 'relative',
+                  left: isMobile ? -6 : -16,
+                  top: isMobile ? -8 : -24,
+                }}
               />
             </div>
           </div>
         )}
 
         {/* Storypt2 bubbles, absolutely positioned, appear and stay on scrolls 6, 7, 8, and 9. Remove on scroll 10+ */}
-        {scrollCount >= 6 && scrollCount < 10 && (
+  {(isMobile || (scrollCount >= 6 && scrollCount < 10)) && (
           <>
             {/* Bubble 1: appears at scroll 6 and stays */}
             <img
@@ -607,31 +700,35 @@ const WhyAangan: React.FC = () => {
         {/* Show woman2 in the center on scroll 10 and 11, and bring in lastBubble.png on 11 */}
         {/* Always render woman2Img and lastBubbleImg for fade-in to work */}
         <>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            marginTop: 32,
-            gap: 24,
-            zIndex: 1,
-            pointerEvents: 'none',
-            height: 0,
-          }}>
+          <div
+            style={{
+              display: isMobile ? 'block' : 'flex',
+              flexDirection: isMobile ? undefined : 'row',
+              alignItems: isMobile ? undefined : 'center',
+              justifyContent: isMobile ? undefined : 'center',
+              width: '100%',
+              marginTop: isMobile ? 16 : 32,
+              gap: isMobile ? undefined : 24,
+              zIndex: 1,
+              pointerEvents: 'none',
+              height: isMobile ? undefined : 0,
+            }}
+          >
             <div style={{ flex: 1 }} />
             <img
               src={woman2Img}
               alt="Woman 2"
-              className={`woman-fade${scrollCount >= 10 ? ' woman-fade-in' : ''}`}
+              className={`woman-fade${(isMobile || scrollCount >= 10) ? ' woman-fade-in' : ''}`}
               style={{
-                position: 'absolute',
-                left: '33%',
-                top: '12%',
-                maxWidth: 230 * 2.5,
-                width: '230%',
+                position: isMobile ? 'static' : 'absolute',
+                left: isMobile ? undefined : '33%',
+                top: isMobile ? undefined : '12%',
+                maxWidth: isMobile ? 180 : 230 * 2.5,
+                width: isMobile ? '100%' : '230%',
                 zIndex: 3,
                 pointerEvents: 'none',
+                margin: isMobile ? '0 auto' : undefined,
+                display: 'block',
               }}
             />
             <div style={{ flex: 1 }} />
@@ -639,18 +736,20 @@ const WhyAangan: React.FC = () => {
           <img
             src={lastBubbleImg}
             alt="Last Bubble"
-            className={`bubble-fade${scrollCount === 11 ? ' bubble-fade-in' : ''}`}
+            className={`bubble-fade${(isMobile || scrollCount === 11) ? ' bubble-fade-in' : ''}`}
             style={{
-              position: 'absolute',
-              right: '-5%',
-              top: '25%',
-              transform: 'translate(-50%, 0)',
-              maxWidth: 320 * 1.5,
-              width: '150%',
+              position: isMobile ? 'static' : 'absolute',
+              right: isMobile ? undefined : '-5%',
+              top: isMobile ? undefined : '25%',
+              transform: isMobile ? undefined : 'translate(-50%, 0)',
+              maxWidth: isMobile ? 180 : 320 * 1.5,
+              width: isMobile ? '100%' : '150%',
               zIndex: 4,
               pointerEvents: 'none',
-              opacity: scrollCount === 11 ? undefined : 0,
+              opacity: (isMobile || scrollCount === 11) ? undefined : 0,
               transition: 'opacity 0.7s',
+              margin: isMobile ? '0 auto' : undefined,
+              display: 'block',
             }}
           />
         </>

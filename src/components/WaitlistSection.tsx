@@ -7,29 +7,30 @@ import type { JSX } from "react";
 const WaitlistSection = (): JSX.Element => {
   return (
     <motion.section
-      className="flex flex-col items-start w-full"
+      className="flex flex-col items-start w-full min-h-screen md:min-h-0 overflow-x-hidden"
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 1.1, ease: 'easeOut' }}
     >
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-x-hidden overflow-y-visible md:overflow-hidden">
         {/* Pink background with pattern image */}
         <motion.div
-          className="relative w-full bg-[#ff9bc5] py-20 md:py-28"
+          className="relative w-full bg-[#ff9bc5] py-16 md:py-28 min-h-screen md:min-h-0"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ delay: 0.2, duration: 1, ease: 'easeOut' }}
         >
           <img
-            className="absolute w-full h-full top-0 left-0 object-cover"
+            className="absolute w-full h-full top-0 left-0 object-cover pointer-events-none select-none"
             alt="Background pattern"
             src={backgroundPattern}
+            style={{ zIndex: 0 }}
           />
           {/* Main content: title, description, and email button */}
           <motion.div
-            className="relative flex flex-col items-center justify-center gap-8 px-6 z-10 max-w-7xl mx-auto"
+            className="relative flex flex-col items-center justify-center gap-8 px-4 sm:px-6 z-10 max-w-7xl mx-auto w-full"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -37,7 +38,7 @@ const WaitlistSection = (): JSX.Element => {
           >
             {/* Section heading */}
             <motion.h2
-              className="text-2xl lg:text-3xl font-medium text-center text-black"
+              className="text-xl sm:text-2xl lg:text-3xl font-medium text-center text-black"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -47,7 +48,7 @@ const WaitlistSection = (): JSX.Element => {
             </motion.h2>
             {/* Description for the waitlist */}
             <motion.p
-              className="text-sm text-center text-black max-w-xl"
+              className="text-sm text-center text-black max-w-xs sm:max-w-xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -59,7 +60,7 @@ const WaitlistSection = (): JSX.Element => {
             </motion.p>
             {/* Email signup button */}
             <motion.button
-              className="flex items-center gap-2 px-4 py-2 bg-[#ffffff80] border border-[#414141] rounded-md hover:bg-[#ffffff95] transition-all"
+              className="flex items-center gap-2 px-3 py-2 bg-[#ffffffcc] border border-[#414141] rounded-md hover:bg-[#ffffffee] transition-all w-full max-w-xs sm:max-w-md"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -68,17 +69,17 @@ const WaitlistSection = (): JSX.Element => {
                 console.log("Email signup clicked");
               }}
             >
-              <span className="text-sm text-[#414141]">
+              <span className="text-sm text-[#414141] text-left whitespace-normal">
                 Enter your email to join the waitlist
               </span>
               <img
-                className="w-5 h-5"
+                className="w-5 h-5 flex-shrink-0"
                 alt="Email icon"
                 src={emailIcon}
               />
             </motion.button>
             <motion.p
-              className="text-sm text-center text-black mt-5 px-4"
+              className="text-xs sm:text-sm text-center text-black mt-5 px-2 sm:px-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
