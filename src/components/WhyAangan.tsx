@@ -23,22 +23,21 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
   const [scrollCount, setScrollCount] = useState(0);
   const [locked, setLocked] = useState(true);
   const lastScrollY = useRef(window.scrollY);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    // Detect mobile (width <= 768px)
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
-    // Always use scroll lock logic, even on mobile
+    if (isMobile) return; // Disable scroll lock logic on mobile
+
     let swipeActive = false;
     let swipeTimeout: ReturnType<typeof setTimeout> | null = null;
     const SWIPE_TIMEOUT = 180;
-    const DELTA_Y_THRESHOLD = 40; // Ignore micro-scrolls (touchpad)
+    const DELTA_Y_THRESHOLD = 40;
 
     const docHeight = () => document.documentElement.scrollHeight - window.innerHeight;
     const lockScroll = () => {
@@ -52,17 +51,11 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
 
     const onWheel = (e: WheelEvent) => {
       if (!locked) return;
-
-      // Only respond to significant scrolls (ignore touchpad micro-scrolls)
       if (Math.abs(e.deltaY) < DELTA_Y_THRESHOLD) return;
-
       const dHeight = docHeight();
       const scrollTop = window.scrollY;
       const maxScroll = Math.round(dHeight * 0.28);
-
-      // Only increment/decrement by 1 per event, regardless of deltaY size
       const scrollDirection = e.deltaY > 0 ? 1 : (e.deltaY < 0 ? -1 : 0);
-
       if (locked && scrollTop >= maxScroll - 1) {
         e.preventDefault();
         window.scrollTo({ top: maxScroll });
@@ -99,7 +92,7 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
       swipeTimeout && clearTimeout(swipeTimeout);
       unlockScroll();
     };
-  }, [locked]);
+  }, [locked, isMobile]);
 
   useEffect(() => {
     onScrollCountChange?.(scrollCount);
