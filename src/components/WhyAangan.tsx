@@ -34,11 +34,7 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
   }, []);
 
   useEffect(() => {
-    if (isMobile) {
-      setLocked(false);
-      setScrollCount(11); // Show all content on mobile
-      return;
-    }
+    // Always use scroll lock logic, even on mobile
     let swipeActive = false;
     let swipeTimeout: ReturnType<typeof setTimeout> | null = null;
     const SWIPE_TIMEOUT = 180;
@@ -103,7 +99,7 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
       swipeTimeout && clearTimeout(swipeTimeout);
       unlockScroll();
     };
-  }, [locked, isMobile]);
+  }, [locked]);
 
   useEffect(() => {
     onScrollCountChange?.(scrollCount);
@@ -111,7 +107,6 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
   }, [scrollCount, onScrollCountChange]);
 
   useEffect(() => {
-    if (isMobile) return;
     const dHeight = () => document.documentElement.scrollHeight - window.innerHeight;
     const onScroll = () => {
       const scrollTop = window.scrollY;
@@ -135,9 +130,9 @@ const ScrollProgress: React.FC<ScrollProgressProps> = ({ onScrollCountChange }) 
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [locked, isMobile]);
+  }, [locked]);
 
-  if (isMobile) return null;
+  // Show scroll progress on all devices for debugging (optional: hide on mobile if undesired)
   return (
     <div style={{
       position: "fixed",
@@ -169,7 +164,7 @@ const WhyAangan: React.FC = () => {
 
   return (
     <>
-      <ScrollProgress onScrollCountChange={setScrollCount} />
+  <ScrollProgress onScrollCountChange={setScrollCount} />
 
       <section
         style={{
@@ -502,8 +497,8 @@ const WhyAangan: React.FC = () => {
           </span>
         </h2>
 
-        {/* Main content blocks after heading */}
-  {(isMobile || scrollCount < 6) && (
+    {/* Main content blocks after heading */}
+  {scrollCount < 6 && (
           <div
             style={{
               display: isMobile ? 'block' : 'flex',
@@ -615,8 +610,8 @@ const WhyAangan: React.FC = () => {
           </div>
         )}
 
-        {/* Storypt2 bubbles, absolutely positioned, appear and stay on scrolls 6, 7, 8, and 9. Remove on scroll 10+ */}
-  {(isMobile || (scrollCount >= 6 && scrollCount < 10)) && (
+    {/* Storypt2 bubbles, absolutely positioned, appear and stay on scrolls 6, 7, 8, and 9. Remove on scroll 10+ */}
+  {(scrollCount >= 6 && scrollCount < 10) && (
           <>
             {/* Bubble 1: appears at scroll 6 and stays */}
             <img
