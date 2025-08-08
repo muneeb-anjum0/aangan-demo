@@ -17,16 +17,7 @@ const Hero: React.FC = () => {
   }, []);
   // Cloud animation config (faster and smoother)
   const cloudTransition = { delay: 0.05, duration: 0.7 };
-  // For continuous drifting effect (desktop only)
-  const cloudDrift = isDesktop
-    ? {
-        animate: { opacity: 1, scale: 1, rotate: 160, x: [0, 20, 0] },
-        transition: { ...cloudTransition, repeat: Infinity, repeatType: "reverse" as const },
-      }
-    : {
-        animate: { opacity: 1, scale: 1, rotate: 160 },
-        transition: cloudTransition,
-      };
+  // ...existing code...
   return (
     <>
       {/* Animated clouds in the background for visual appeal */}
