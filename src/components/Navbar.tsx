@@ -1,6 +1,7 @@
 
 // Navigation bar with logo, links, and call-to-action button
 import React, { useState } from 'react';
+import '../navbar-mobile.css';
 import logoMark from '../assets/navbar/aangan-logo-mark.svg';
 import textLogo from '../assets/navbar/aangan-text-logo.png';
 
@@ -9,14 +10,14 @@ const navItems = ['Home', 'Community', 'Pricing', 'About us', 'Contact'];
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav className="py-6 bg-transparent relative">
+  <nav className="py-6 bg-transparent relative navbar-mobile-small">
       {/* Decorative bottom glow for visual separation */}
       <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white/30 to-transparent pointer-events-none"></div>
       <div className="container mx-auto flex items-center justify-between px-6 relative z-10">
         {/* Brand logo (icon and text) */}
         <div className="flex items-center space-x-3">
-          <img src={logoMark} alt="Aangan logo mark" className="h-12 w-auto" />
-          <img src={textLogo} alt="Aangan text logo" className="h-8 w-auto mt-2" style={{marginTop: '0.5rem'}} />
+          <img src={logoMark} alt="Aangan logo mark" className="h-12 w-auto navbar-mobile-logo" />
+          <img src={textLogo} alt="Aangan text logo" className="h-8 w-auto mt-2 navbar-mobile-textlogo" style={{marginTop: '0.5rem'}} />
         </div>
 
         {/* Hamburger icon for mobile */}

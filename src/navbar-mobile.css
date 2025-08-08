@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+  .navbar-mobile-small {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  .navbar-mobile-logo {
+    height: 2.25rem !important; /* h-9 */
+  }
+  .navbar-mobile-textlogo {
+    height: 1.25rem !important; /* h-5 */
+    margin-top: 0.25rem !important;
+  }
+}

@@ -1,6 +1,7 @@
 // Footer section with logo, links, and copyright bar
 import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react";
+import "./FooterSection.mobile.css";
 import footerBackgroundPattern from "../assets/footer/footer-background-pattern.png";
 import aanganLogoMark from "../assets/footer/aangan-logo-mark.svg";
 import aanganTextLogo from "../assets/footer/aangan-text-logo.png";
@@ -67,12 +68,12 @@ const FooterSection = (): JSX.Element => {
   ];
 
   return (
-    <footer className="flex flex-col items-start w-full">
+  <footer className="flex flex-col items-start w-full footer-mobile-compact">
       <div ref={footerRef} className="relative w-full overflow-hidden">
-        <div className="relative bg-[#fffafa]">
+  <div className="relative bg-transparent">
           <Card>
             <CardContent>
-              <div className="flex flex-col lg:flex-row lg:justify-between gap-10 lg:gap-16 max-w-7xl mx-auto py-10 md:py-16">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-10 lg:gap-16 max-w-7xl mx-auto py-10 md:py-16">
                 {/* Logo and description */}
                 <div
                   className={`flex flex-col max-w-full lg:max-w-[740px] gap-6 sm:gap-8 md:gap-10 lg:gap-12
@@ -132,24 +133,36 @@ const FooterSection = (): JSX.Element => {
                   </div>
                 </div>
 
-                {/* Navigation links */}
+                {/* Navigation links - right aligned on desktop */}
                 <div
-                  className={`flex flex-col sm:flex-row lg:flex-row gap-6 lg:gap-12 justify-center lg:justify-start
-                    transition-all duration-[1800ms] ease-out delay-700
+                  className={`flex flex-col sm:flex-row lg:flex-row gap-6 lg:gap-12 justify-center lg:justify-end items-center lg:items-start transition-all duration-[1800ms] ease-out delay-700
                     ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
-                    w-full
+                    w-full lg:w-auto
                   `}
+                  style={{ minWidth: 0 }}
                 >
-                  <div className="flex flex-col gap-3 text-center lg:text-left">
+                  <div className="flex flex-col gap-3 text-center lg:self-start">
                     <h3 className="text-lg font-medium text-[#212121]">
                       Product
                     </h3>
-                    <nav className="flex flex-col gap-1">
+                    {/* Mobile: grid columns and centered, Desktop: vertical list right-aligned */}
+                    <nav className="flex-col gap-1 hidden sm:flex">
                       {productLinks.map((link, index) => (
                         <a
                           key={index}
                           href={link.href}
-                          className="text-sm text-[#212121] hover:text-[#ff9bc5]"
+                          className="text-sm text-[#212121] hover:text-[#ff9bc5] text-center"
+                        >
+                          {link.title}
+                        </a>
+                      ))}
+                    </nav>
+                    <nav className="grid grid-cols-2 justify-items-center sm:hidden">
+                      {productLinks.map((link, index) => (
+                        <a
+                          key={index}
+                          href={link.href}
+                          className="text-sm text-[#212121] hover:text-[#ff9bc5] text-center"
                         >
                           {link.title}
                         </a>
@@ -157,7 +170,7 @@ const FooterSection = (): JSX.Element => {
                     </nav>
                   </div>
 
-                  <div className="flex flex-col gap-3 text-center lg:text-left">
+                  <div className="flex flex-col gap-3 text-center lg:self-start">
                     <h3 className="text-lg font-medium text-[#212121]">
                       Legal
                     </h3>
@@ -166,7 +179,7 @@ const FooterSection = (): JSX.Element => {
                         <a
                           key={index}
                           href={link.href}
-                          className="text-sm text-[#212121] hover:text-[#ff9bc5]"
+                          className="text-sm text-[#212121] hover:text-[#ff9bc5] text-center"
                         >
                           {link.title}
                         </a>
@@ -180,7 +193,7 @@ const FooterSection = (): JSX.Element => {
 
           {/* Background image is NOT animated */}
           <img
-            className="absolute w-full h-full top-0 left-0 z-0 pointer-events-none opacity-50 select-none"
+            className="absolute w-full h-full top-0 left-0 z-0 pointer-events-none opacity-50 select-none footer-bg-mobile"
             alt="Background pattern"
             src={footerBackgroundPattern}
             style={{ objectFit: 'cover', minHeight: 0, minWidth: 0 }}

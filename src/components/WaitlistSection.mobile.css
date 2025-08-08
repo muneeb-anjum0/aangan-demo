@@ -1,0 +1,29 @@
+@media (max-width: 640px) {
+  .waitlist-mobile-compact {
+    padding-top: 2rem !important;
+    padding-bottom: 0 !important;
+    min-height: unset !important;
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+  /* background intentionally not overridden to keep pink */
+  }
+  .waitlist-mobile-compact .waitlist-title {
+    font-size: 1.1rem !important;
+    line-height: 1.3 !important;
+  }
+  .waitlist-mobile-compact .waitlist-desc {
+    font-size: 0.95rem !important;
+    max-width: 90vw !important;
+    margin-bottom: 0 !important;
+  }
+  .waitlist-mobile-compact .waitlist-btn {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.95rem !important;
+    max-width: 95vw !important;
+  }
+  .waitlist-mobile-compact .waitlist-note {
+    font-size: 0.8rem !important;
+    margin-top: 0.25rem !important;
+    padding: 0 0.5rem !important;
+  }
+}

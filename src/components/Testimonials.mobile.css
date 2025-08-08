@@ -1,0 +1,13 @@
+/* Make the 'by' in 'Trusted by' less thick on mobile */
+@media (max-width: 768px) {
+  .less-thick-mobile {
+    font-weight: 200 !important;
+  }
+}
+/* Remove glow from 'Women' in testimonials heading on mobile only */
+@media (max-width: 768px) {
+  .no-glow-mobile {
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+  }
+}

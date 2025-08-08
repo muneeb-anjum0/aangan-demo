@@ -42,17 +42,17 @@ const FAQ: React.FC = () => {
   return (
     <>
       <motion.section
-        className="w-full py-16 px-6 md:px-16"
+        className="w-full py-6 px-2 sm:py-16 sm:px-6 md:px-16"
         style={{ backgroundColor: '#fdf8f7' }}
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 1.1, ease: 'easeOut' }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
       >
-        <div className="max-w-6xl mx-auto">
+  <div className="max-w-6xl mx-auto">
           {/* Section heading and subtitle */}
           <motion.h2
-            className="text-center text-4xl md:text-5xl font-sans mb-4"
+            className="text-center text-2xl sm:text-4xl md:text-5xl font-sans mb-2 sm:mb-4"
             style={{
               color: '#333',
               fontFamily: 'Futura, Century Gothic, Avenir, sans-serif',
@@ -64,7 +64,7 @@ const FAQ: React.FC = () => {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: 0.2, duration: 1, ease: 'easeOut' }}
+            transition={{ delay: 0.05, duration: 0.3, ease: 'easeOut' }}
           >
             <span style={{ fontWeight: 300, color: '#333' }}>Frequently </span>
             <span style={{ fontWeight: 400, color: '#333', WebkitTextStroke: '0.5px #333', textShadow: '0 0 2px #fc9ac3' }}>Asked </span>
@@ -72,11 +72,11 @@ const FAQ: React.FC = () => {
           </motion.h2>
           {/* Subtitle */}
           <motion.p
-            className="text-center text-gray-600 mb-12 max-w-2xl mx-auto"
+            className="text-center text-gray-600 mb-6 sm:mb-12 max-w-2xl mx-auto text-base sm:text-lg"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
+            transition={{ delay: 0.1, duration: 0.25, ease: 'easeOut' }}
           >
             These are some of the most common questions from our community.
           </motion.p>
@@ -86,17 +86,17 @@ const FAQ: React.FC = () => {
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
-                className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="border border-gray-100 rounded-lg sm:rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ delay: 0.5 + index * 0.1, duration: 0.7, ease: 'easeOut' }}
+                transition={{ delay: 0.12 + index * 0.04, duration: 0.25, ease: 'easeOut' }}
               >
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-25 transition-colors"
+                  className="w-full px-3 py-3 sm:px-6 sm:py-5 text-left flex justify-between items-center hover:bg-gray-25 transition-colors"
                 >
-                  <span className="font-semibold text-gray-900 pr-4 text-lg">
+                  <span className="font-semibold text-gray-900 pr-2 text-base sm:pr-4 sm:text-lg">
                     {faq.question}
                   </span>
                   <svg
@@ -117,12 +117,12 @@ const FAQ: React.FC = () => {
                 </button>
                 {activeIndex === index && (
                   <motion.div
-                    className="px-6 pb-5 pt-1"
+                    className="px-3 pb-3 pt-1 sm:px-6 sm:pb-5"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
                   >
-                    <p className="text-gray-600 leading-relaxed text-base">
+                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
                       {faq.answer}
                     </p>
                   </motion.div>
@@ -133,14 +133,14 @@ const FAQ: React.FC = () => {
 
           {/* Ask a Question Button */}
           <motion.div
-            className="text-center mt-12"
+            className="text-center mt-8 sm:mt-12"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: 'easeOut' }}
+            transition={{ delay: 0.18, duration: 0.25, ease: 'easeOut' }}
           >
             <button
-              className="px-8 py-2.5 rounded-xl text-white font-medium text-xl transition-all hover:opacity-90 transform hover:scale-105 flex items-center justify-center gap-2.5 mx-auto"
+              className="px-6 py-2 rounded-lg sm:px-8 sm:py-2.5 sm:rounded-xl text-white font-medium text-lg sm:text-xl transition-all hover:opacity-90 transform hover:scale-105 flex items-center justify-center gap-2.5 mx-auto"
               style={{ backgroundColor: '#fc9ac3' }}
             >
               Ask a Question

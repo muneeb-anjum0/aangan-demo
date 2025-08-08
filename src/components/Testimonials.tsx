@@ -1,5 +1,6 @@
 // Section displaying user testimonials and reviews
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
+import './Testimonials.mobile.css';
 import { motion } from 'framer-motion';
 import person1 from '../assets/testimonials/person1.jpg';
 import person2 from '../assets/testimonials/person2.jpg';
@@ -12,18 +13,38 @@ const Testimonials: React.FC = () => {
   // Ref for the scrollable testimonials container
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Enable horizontal scroll with mouse wheel
-  useEffect(() => {
+  // Seamless infinite horizontal scroll with smooth looping
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
     const el = scrollRef.current;
     if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (e.deltaY !== 0) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY;
+    // Detect mobile device
+    const isMobile = window.innerWidth <= 768;
+    // Faster scroll for mobile
+    let scrollAmount = isMobile ? 1.2 : 0.5;
+    let reqId: number;
+    let firstSetWidth = 0;
+
+    function measureWidth() {
+      if (!el) return;
+      firstSetWidth = el.scrollWidth / 2;
+    }
+    measureWidth();
+    window.addEventListener('resize', measureWidth);
+
+    function autoScroll() {
+      if (!el) return;
+      el.scrollLeft += scrollAmount;
+      if (el.scrollLeft >= firstSetWidth) {
+        el.scrollLeft = el.scrollLeft - firstSetWidth;
       }
+      reqId = requestAnimationFrame(autoScroll);
+    }
+    reqId = requestAnimationFrame(autoScroll);
+    return () => {
+      cancelAnimationFrame(reqId);
+      window.removeEventListener('resize', measureWidth);
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
   }, []);
   const testimonials = [
     {
@@ -121,54 +142,78 @@ const Testimonials: React.FC = () => {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ delay: 0.2, duration: 1, ease: 'easeOut' }}
         >
-          <span style={{ fontWeight: 400, color: '#333' }}>Trusted by </span>
-          <span style={{ fontWeight: 600, color: '#fc9ac3', WebkitTextStroke: '0.7px #fc9ac3', textShadow: '0 0 2px #fc9ac3' }}>Women </span>
+          <span className="less-thick-mobile" style={{ fontWeight: 400, color: '#333' }}>Trusted by </span>
+          <span 
+            className="no-glow-mobile"
+            style={{ fontWeight: 600, color: '#fc9ac3', WebkitTextStroke: '0.7px #fc9ac3', textShadow: '0 0 2px #fc9ac3' }}
+          >Women </span>
           <span style={{ fontWeight: 200, color: '#333', letterSpacing: '0.01em' }}>Across </span>
           <span style={{ fontWeight: 200, color: '#333', letterSpacing: '0.01em' }}>Pakistan</span>
         </motion.h2>
       </div>
 
-      {/* Responsive testimonials grid: horizontal scroll on desktop, vertical stack on mobile */}
-      <div
-        ref={scrollRef}
-        className="flex flex-col gap-6 mb-12 pb-4 hide-scrollbar px-2 sm:px-6 md:px-16
-          sm:flex-row sm:overflow-x-auto sm:overflow-y-hidden sm:max-h-[340px]"
-      >
-        {testimonials.map((testimonial, idx) => (
-          <motion.div
-            key={testimonial.id}
-            className="rounded-3xl px-6 py-6 shadow-sm border border-opacity-50 flex flex-col h-auto sm:h-[300px] flex-shrink-0 w-full sm:w-[360px]"
-            style={{ backgroundColor: '#fde6ee', borderColor: '#ff9cc5' }}
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ delay: 0.3 + idx * 0.1, duration: 0.7, ease: 'easeOut' }}
-          >
-            {/* Star rating for each testimonial */}
-            <div className="flex justify-center mb-2">
-              {renderStars(testimonial.rating)}
-            </div>
+      {/* Testimonials grid: always horizontal scroll */}
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          className="flex flex-row gap-6 mb-12 pb-4 hide-scrollbar px-2 sm:px-6 md:px-16 overflow-y-hidden max-h-[340px] pointer-events-none select-none"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overflowX: 'hidden',
+            touchAction: 'none',
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          }}
+        >
+          {/* Duplicate testimonials for seamless loop */}
+          {[...Array(2)].map((_, dupIdx) => (
+            testimonials.map((testimonial, idx) => {
+              // Remove animation on mobile
+              const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+              const motionProps = isMobile
+                ? {}
+                : {
+                    initial: { opacity: 0, y: 40, scale: 0.95 },
+                    whileInView: { opacity: 1, y: 0, scale: 1 },
+                    viewport: { once: true, amount: 0.2 },
+                    transition: { delay: 0.3 + idx * 0.1, duration: 0.7 },
+                  };
+              return (
+                <motion.div
+                  key={testimonial.id + '-dup' + dupIdx}
+                  className="rounded-3xl px-6 py-6 shadow-sm border border-opacity-50 flex flex-col h-auto sm:h-[300px] flex-shrink-0 w-full sm:w-[360px]"
+                  style={{ backgroundColor: '#fde6ee', borderColor: '#ff9cc5' }}
+                  {...motionProps}
+                >
+                  {/* Star rating for each testimonial */}
+                  <div className="flex justify-center mb-2">
+                    {renderStars(testimonial.rating)}
+                  </div>
 
-            {/* Testimonial text */}
-            <p className="text-sm text-gray-700 text-center flex-grow mb-2 leading-relaxed">
-              "{testimonial.text}"
-            </p>
+                  {/* Testimonial text */}
+                  <p className="text-sm text-gray-700 text-center flex-grow mb-2 leading-relaxed">
+                    "{testimonial.text}"
+                  </p>
 
-            {/* Author info with avatar */}
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden shadow-md">
-                <img 
-                  src={testimonial.image} 
-                  alt={testimonial.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <p className="font-semibold text-gray-800 text-sm">
-                {testimonial.name} – {testimonial.location}
-              </p>
-            </div>
-          </motion.div>
-        ))}
+                  {/* Author info with avatar */}
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden shadow-md">
+                      <img 
+                        src={testimonial.image} 
+                        alt={testimonial.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="font-semibold text-gray-800 text-sm">
+                      {testimonial.name} – {testimonial.location}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })
+          ))}
+          {/* Removed right-side blur/gradient scroll indicator for mobile */}
+        </div>
       </div>
 
       {/* Button to encourage users to share their own story */}
