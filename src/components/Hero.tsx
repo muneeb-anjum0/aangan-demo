@@ -8,13 +8,7 @@ import woman2 from '../assets/hero/woman2.png';
 import { useEffect, useState } from 'react';
 
 const Hero: React.FC = () => {
-  // Track window width to adjust animation for desktop vs mobile
-  const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // ...existing code...
   // Cloud animation config (faster and smoother)
   const cloudTransition = { delay: 0.05, duration: 0.7 };
   // ...existing code...
