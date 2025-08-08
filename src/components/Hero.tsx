@@ -5,7 +5,7 @@ import cloud from '../assets/hero/cloud.png';
 import woman1 from '../assets/hero/woman1.png';
 import woman2 from '../assets/hero/woman2.png';
 
-import { useEffect, useState } from 'react';
+// ...existing code...
 
 const Hero: React.FC = () => {
   // ...existing code...
