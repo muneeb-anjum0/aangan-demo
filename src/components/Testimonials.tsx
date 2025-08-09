@@ -122,7 +122,7 @@ const Testimonials: React.FC = () => {
   return (
     <section
       className="w-full py-8 px-4 sm:px-6 md:px-16"
-      style={{ backgroundColor: '#FEDDE8' }}
+      style={{ backgroundColor: '#FEDDE8', position: 'relative', zIndex: 10 }}
     >
       <div className="max-w-7xl mx-auto">
         {/* Section heading with animation */}
