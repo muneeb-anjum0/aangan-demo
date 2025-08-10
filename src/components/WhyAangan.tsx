@@ -341,12 +341,12 @@ const WhyAangan: React.FC = () => {
     if (!outer || !pin) return;
 
     const now = performance.now();
-    const pageYf = window.scrollY || window.pageYOffset;
-    const pageY = Math.round(pageYf);
+  const pageYf = window.scrollY || window.pageYOffset;
+  const pageY = Math.round(pageYf);
 
-    const dt = Math.max(1, now - lastT.current);
-    const sectionTop = outer.offsetTop;
-    const viewportH = window.innerHeight;
+  // Removed unused variable 'dt' to fix TS6133 error
+  const sectionTop = outer.offsetTop;
+  const viewportH = window.innerHeight;
 
     const pinHeight = Math.max(viewportH - offsetPx, 1);
 

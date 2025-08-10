@@ -1,6 +1,7 @@
 // Hero section with animated clouds, main headline, and illustrations
 import React from 'react';
 import { motion } from 'framer-motion';
+import { cubicBezier } from 'framer-motion';
 import cloud from '../assets/hero/cloud.png';
 import woman1 from '../assets/hero/woman1.png';
 import woman2 from '../assets/hero/woman2.png';
@@ -13,7 +14,7 @@ const Hero: React.FC = () => {
       opacity: 1,
       transition: {
         duration: 0.28,
-        ease: [0.22, 0.61, 0.36, 1],
+        ease: cubicBezier(0.22, 0.61, 0.36, 1),
         when: 'beforeChildren',
         staggerChildren: 0.06,
       },
@@ -27,7 +28,7 @@ const Hero: React.FC = () => {
       y: 0,
       scale: 1,
       filter: 'blur(0px)',
-      transition: { duration: 0.42, ease: [0.2, 0.8, 0.2, 1] },
+      transition: { duration: 0.42, ease: cubicBezier(0.2, 0.8, 0.2, 1) },
     },
   };
 
@@ -185,7 +186,7 @@ const Hero: React.FC = () => {
             <motion.img
               src={woman2}
               alt="woman waving"
-              className="h-40 xs:h-44 sm:h-48 md:h-64 lg:h-72 object-contain -ml-40G md:-ml-24 hero-woman2"
+              className="h-40 xs:h-44 sm:h-48 md:h-64 lg:h-72 object-contain -ml-40G md:-ml-24 hero-woman2 mobile-woman2-left"
               style={{ maxWidth: '140px', width: '100%' }}
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -194,6 +195,9 @@ const Hero: React.FC = () => {
             <style>{`
               @media (min-width: 1024px) {
                 .hero-woman1, .hero-woman2 { max-width: 260px !important; width: 260px !important; }
+              }
+              @media (max-width: 767px) {
+                .mobile-woman2-left { margin-left: -150px !important; }
               }
             `}</style>
           </motion.div>
