@@ -133,15 +133,15 @@ const FooterSection = (): JSX.Element => {
                   </div>
                 </div>
 
-                {/* Navigation links - right aligned on desktop */}
+                {/* Navigation links - improved mobile layout: columns centered, max width, divider */}
                 <div
-                  className={`flex flex-col sm:flex-row lg:flex-row gap-6 lg:gap-12 justify-center lg:justify-end items-center lg:items-start transition-all duration-[1800ms] ease-out delay-700
+                  className={`flex flex-row flex-wrap sm:flex-row lg:flex-row gap-0 sm:gap-6 lg:gap-12 justify-center lg:justify-end items-stretch transition-all duration-[1800ms] ease-out delay-700
                     ${isVisible ? "animate-fade-in-up" : "opacity-0 translate-y-8"}
                     w-full lg:w-auto
                   `}
                   style={{ minWidth: 0 }}
                 >
-                  <div className="flex flex-col gap-3 text-center lg:self-start">
+                  <div className="flex flex-col gap-3 text-center items-center lg:self-start flex-1 max-w-[180px] mx-auto px-2">
                     <h3 className="text-lg font-medium text-[#212121]">
                       Product
                     </h3>
@@ -170,7 +170,10 @@ const FooterSection = (): JSX.Element => {
                     </nav>
                   </div>
 
-                  <div className="flex flex-col gap-3 text-center lg:self-start">
+                  {/* Divider for mobile only */}
+                  <div className="w-px bg-gray-200 mx-2 my-2 sm:hidden" />
+
+                  <div className="flex flex-col gap-3 text-center items-center lg:self-start flex-1 max-w-[180px] mx-auto px-2">
                     <h3 className="text-lg font-medium text-[#212121]">
                       Legal
                     </h3>

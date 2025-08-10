@@ -1,69 +1,110 @@
-# React + TypeScript + Vite
+# WhyAangan – The Storytelling Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Aangan Logo](./src/assets/footer/aangan-logo-mark.svg)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Project Highlights
 
-## Expanding the ESLint configuration
+### 1. WhyAangan: Interactive Storytelling Section
+- **Scroll-driven, animated storytelling** with custom illustrations and smooth transitions.
+- **Three unique scenes** that visually narrate Aangan's mission and vision.
+- **Pinning and progress tracking**: The story section stays fixed as you scroll, with a live progress bar and animated hints.
+- **Performance-optimized**: Uses React hooks, refs, and efficient animation logic for a seamless experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 2. Mobile, Fully Responsive Design
+- **Dedicated mobile layouts** for every section, including WhyAangan, Hero, Testimonials, Waitlist, FAQ, and Footer.
+- **Touch-friendly navigation**: Hamburger menu, large tap targets, and mobile-optimized spacing.
+- **Adaptive assets**: Images, clouds, and bubbles are repositioned and resized for small screens.
+- **Mobile-specific CSS**: Custom `.mobile.css` files for each major component ensure pixel-perfect rendering on all devices.
+- **Optimized performance**: Lazy loading, reduced motion for mobile, and fast initial load.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 3. What I Did
+- Designed and implemented the entire `WhyAangan` component, including all animation logic, scene management, and responsive design.
+- Built mobile-specific layouts and styles for all major sections, ensuring a smooth, beautiful experience on phones and tablets.
+- Refactored navigation, testimonials, waitlist, FAQ, and footer for mobile usability and accessibility.
+- Integrated custom assets, illustrations, and ensured accessibility and performance across devices.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📝 Project Overview
+
+Aangan is a modern, mobile-first landing page built with **React**, **TypeScript**, **Vite**, and **Tailwind CSS**. It features:
+
+- Dynamic hero section with animated clouds and illustrations
+- Interactive, scroll-driven WhyAangan storytelling
+- Infinite-scrolling testimonials
+- FAQ with animated expand/collapse
+- Waitlist signup with email integration
+- Custom animated footer with social links
+- Modular, reusable components
+
+---
+
+## 🛠️ Tech Stack
+- **React 19** + **TypeScript**
+- **Vite** for fast development and builds
+- **Tailwind CSS** for utility-first styling
+- **Framer Motion** for advanced animations
+- **ESLint** for code quality
+
+---
+
+## 📱 Mobile Version Highlights
+- **WhyAangan**: All scenes and clouds are repositioned for vertical scrolling, with touch-friendly progress and hints.
+- **Hero**: Responsive headline, animated clouds, and illustrations scale and reposition for mobile.
+- **Testimonials**: Horizontal scroll speed increases on mobile, with swipe support and larger tap targets.
+- **Waitlist**: Compact, single-column layout with large buttons and easy email entry.
+- **FAQ**: Accordion-style questions with smooth open/close animations, optimized for touch.
+- **Footer**: Stacked layout, larger icons, and easy-to-tap social links.
+- **Navigation**: Hamburger menu, sticky navbar, and smooth transitions.
+
+---
+
+## 🚦 Getting Started
+
+1. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+2. **Run the development server:**
+   ```sh
+   npm run dev
+   ```
+3. **Build for production:**
+   ```sh
+   npm run build
+   ```
+4. **Preview the build:**
+   ```sh
+   npm run preview
+   ```
+
+---
+
+## 📁 Folder Structure
+
+```
+Aangan/
+├── public/                # Static assets
+├── src/
+│   ├── assets/            # Images and graphics
+│   ├── components/        # All React components
+│   │   ├── WhyAangan.tsx  # The main storytelling section
+│   │   ├── *.mobile.css   # Mobile-specific styles
+│   │   └── ...
+│   ├── App.tsx            # App entry
+│   └── ...
+├── tailwind.config.js     # Tailwind CSS config
+├── vite.config.ts         # Vite config
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🙏 Credits
+- All illustrations and assets are custom and belong to the Aangan project.
+- Developed by [Your Name].
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📄 License
+This project is for demonstration and educational purposes only.

@@ -67,7 +67,7 @@ const FAQ: React.FC = () => {
             transition={{ delay: 0.05, duration: 0.3, ease: 'easeOut' }}
           >
             <span style={{ fontWeight: 300, color: '#333' }}>Frequently </span>
-            <span style={{ fontWeight: 400, color: '#333', WebkitTextStroke: '0.5px #333', textShadow: '0 0 2px #fc9ac3' }}>Asked </span>
+            <span style={{ fontWeight: 400, color: '#333', WebkitTextStroke: '0.5px #333' }}>Asked </span>
             <span style={{ fontWeight: 200, color: '#fc9ac3', letterSpacing: '0.01em' }}>Questions</span>
           </motion.h2>
           {/* Subtitle */}

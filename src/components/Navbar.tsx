@@ -10,7 +10,7 @@ const navItems = ['Home', 'Community', 'Pricing', 'About us', 'Contact'];
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-  <nav className="py-6 bg-transparent relative navbar-mobile-small">
+  <nav className="py-6 bg-transparent fixed top-0 left-0 w-full z-50 navbar-mobile-small">
       {/* Decorative bottom glow for visual separation */}
       <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white/30 to-transparent pointer-events-none"></div>
       <div className="container mx-auto flex items-center justify-between px-6 relative z-10">

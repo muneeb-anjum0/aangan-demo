@@ -60,10 +60,10 @@ const Hero: React.FC = () => {
         ))}
       </motion.div>
 
-      <section className="relative w-full flex items-center justify-center px-6 md:px-16 border-t border-gray-300 pb-12 overflow-visible md:overflow-visible mobile-clip-clouds hero-section-desktop">
+      <section className="relative w-full flex items-center justify-center px-6 md:px-16 pb-12 overflow-visible md:overflow-visible mobile-allow-overflow hero-section-desktop">
         <style>{`
           @media (max-width: 767px) {
-            .mobile-clip-clouds { overflow: hidden !important; }
+            .mobile-allow-overflow { overflow: visible !important; }
             .hero-section-desktop { min-height: 608px !important; padding-top: 36px !important; padding-bottom: 48px !important; }
             .hero-text-container { max-width: 98vw !important; padding: 20px 0 !important; }
             .hero-main-cycle { font-size: 42px !important; letter-spacing: -1.2px !important; white-space: nowrap !important; }
@@ -185,7 +185,7 @@ const Hero: React.FC = () => {
             <motion.img
               src={woman2}
               alt="woman waving"
-              className="h-40 xs:h-44 sm:h-48 md:h-64 lg:h-72 object-contain -ml-10 md:-ml-24 hero-woman2"
+              className="h-40 xs:h-44 sm:h-48 md:h-64 lg:h-72 object-contain -ml-40G md:-ml-24 hero-woman2"
               style={{ maxWidth: '140px', width: '100%' }}
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}

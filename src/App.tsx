@@ -7,8 +7,9 @@ import FAQ from './components/FAQ';
 import WaitlistSection from './components/WaitlistSection';
 import FooterSection from './components/FooterSection';
 
+
 const App: React.FC = () => (
-  <>
+  <div style={{ paddingTop: '5.5rem' }}>
     <Navbar />
     <Hero />
     <WhyAangan />
@@ -16,7 +17,7 @@ const App: React.FC = () => (
     <FAQ />
     <WaitlistSection />
     <FooterSection />
-  </>
+  </div>
 );
 
 export default App;
