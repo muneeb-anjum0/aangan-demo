@@ -1,11 +1,12 @@
 import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import WhyAangan from './components/WhyAangan';
-import Testimonials from './components/Testimonials';
-import FAQ from './components/FAQ';
-import WaitlistSection from './components/WaitlistSection';
-import FooterSection from './components/FooterSection';
+import Navbar from './components/1.Navbar';
+import Hero from './components/2.Hero';
+import WhyAangan from './components/3.WhyAangan';
+import Testimonials from './components/6.Testimonials';
+import FAQ from './components/5.FAQ';
+import WaitlistSection from './components/7.WaitlistSection';
+import FooterSection from './components/8.FooterSection';
+import MissionVision from './components/4.MissionVision';
 
 
 const App: React.FC = () => (
@@ -13,6 +14,7 @@ const App: React.FC = () => (
     <Navbar />
     <Hero />
     <WhyAangan />
+    <MissionVision />
     <Testimonials />
     <FAQ />
     <WaitlistSection />
