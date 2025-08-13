@@ -134,7 +134,7 @@ const FaqRow = React.memo(function FaqRow({
 type FaqWithIds = FaqItem & { slug: string; headerId: string; panelId: string };
 
 const FAQ: React.FC<Props> = React.memo(function FAQ({ multiOpen = false, onAsk, askHref }) {
-  const reduce = useReducedMotion();
+  const reduce = !!useReducedMotion();
 
   const items: FaqWithIds[] = useMemo(() => {
     return faqs.map((f) => {

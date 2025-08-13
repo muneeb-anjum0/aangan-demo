@@ -1,5 +1,5 @@
 // src/components/FooterSection.tsx
-import React, {
+import {
   memo,
   useEffect,
   useMemo,
