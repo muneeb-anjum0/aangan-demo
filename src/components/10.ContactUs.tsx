@@ -1,7 +1,10 @@
 // src/components/ContactUs.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, FormEvent } from "react";
 import leftBackground from "../assets/missionVision/background-circle2.svg";
 import rightBackground from "../assets/missionVision/background-circle.svg";
+
+// -------- API base (same pattern as Testimonials) --------
+const API_BASE = (import.meta as any).env?.VITE_API_BASE || "http://localhost:5000";
 
 // -------- merged utils.ts (cn) --------
 import type { ClassValue } from "clsx";
@@ -12,7 +15,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 // -------------------------------------
 
-/* === Liquid Glass CTA (same as Pricing) === */
+/* === Liquid Glass CTA (same as Pricing/Testimonials) === */
 const ctaClasses = [
   "group relative inline-flex items-center justify-center gap-2.5",
   "px-4 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-3.5",
@@ -23,7 +26,8 @@ const ctaClasses = [
   "transition-all duration-300 ease-out transform",
   "md:hover:scale-[1.04] hover:-translate-y-[1px] active:translate-y-0",
   "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_16px_40px_rgba(254,213,223,0.85)]",
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-300 focus-visible:ring-offset-2"
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-300 focus-visible:ring-offset-2",
+  "disabled:opacity-60 disabled:cursor-not-allowed"
 ].join(" ");
 
 const GlassLayers = () => (
@@ -80,10 +84,67 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"tex
 );
 Textarea.displayName = "Textarea";
 
+type Note = { kind: "ok" | "err" | null; text: string };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const ContactUs = (): React.JSX.Element => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [areBackgroundsVisible, setAreBackgroundsVisible] = useState(false);
+
+  // form state
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [note, setNote] = useState<Note>({ kind: null, text: "" });
+  const [isSending, setIsSending] = useState(false);
+
+  const hpRef = useRef<HTMLInputElement>(null); // honeypot
+  const noteRef = useRef<HTMLParagraphElement>(null);
+
+  const isValid = useMemo(() => {
+    return first.trim() && message.trim() && EMAIL_RE.test(email.trim().toLowerCase());
+  }, [first, email, message]);
+
+  const onSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (isSending) return;
+      if (hpRef.current?.value) return; // spam bot
+      if (!isValid) {
+        setNote({ kind: "err", text: "Please fill all required fields with a valid email." });
+        noteRef.current?.focus();
+        return;
+      }
+
+      try {
+        setIsSending(true);
+        const res = await fetch(`${API_BASE}/api/contact`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: first.trim(),
+            lastName: last.trim(),
+            email: email.trim(),
+            message: message.trim(),
+          }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        // success
+        setFirst(""); setLast(""); setEmail(""); setMessage("");
+        setNote({ kind: "ok", text: "Thanks! We’ve received your message and will reply soon." });
+        requestAnimationFrame(() => noteRef.current?.focus());
+      } catch (err) {
+        console.error(err);
+        setNote({ kind: "err", text: "Failed to send. Please try again." });
+        noteRef.current?.focus();
+      } finally {
+        setIsSending(false); // <- always reset (fixes “Sending…” getting stuck)
+      }
+    },
+    [first, last, email, message, isValid, isSending]
+  );
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setAreBackgroundsVisible(true));
@@ -110,7 +171,7 @@ export const ContactUs = (): React.JSX.Element => {
         src={rightBackground}
         loading="eager"
         decoding="async"
-  style={{ willChange: "transform, opacity", transform: "scaleX(-1) scaleY(-1)" }}
+        style={{ willChange: "transform, opacity", transform: "scaleX(-1) scaleY(-1)" }}
       />
       <img
         className={cn(
@@ -122,7 +183,7 @@ export const ContactUs = (): React.JSX.Element => {
         src={leftBackground}
         loading="eager"
         decoding="async"
-  style={{ willChange: "transform, opacity", transform: "scaleX(-1) scaleY(-1)" }}
+        style={{ willChange: "transform, opacity", transform: "scaleX(-1) scaleY(-1)" }}
       />
 
       {/* CONTENT */}
@@ -154,7 +215,7 @@ export const ContactUs = (): React.JSX.Element => {
                   isCardVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
                   "hover:scale-[1.022]"
                 )}
-                style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)" }} // no static pink drop shadow
+                style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)" }}
               >
                 {/* Uniform inner glow in #fedee6 */}
                 <span
@@ -181,27 +242,64 @@ export const ContactUs = (): React.JSX.Element => {
                     </p>
                   </div>
 
-                  <form className="flex flex-col gap-3 sm:gap-4 md:gap-5">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                      <Input placeholder="First Name" />
-                      <Input placeholder="Last Name" />
-                    </div>
-                    <Input placeholder="Your Email" type="email" />
-                    <Textarea placeholder="How can we help?" />
-                  </form>
+                  <form className="flex flex-col gap-3 sm:gap-4 md:gap-5" onSubmit={onSubmit} noValidate>
+                    {/* honeypot */}
+                    <input
+                      ref={hpRef}
+                      type="text"
+                      name="company"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      className="sr-only"
+                      aria-hidden="true"
+                    />
 
-                  <div className="mt-5 sm:mt-6 flex flex-col items-center gap-3">
-                    <button type="button" aria-label="Submit" className={`${ctaClasses} w-full`}>
-                      <GlassLayers />
-                      <CtaLabel text="Submit" />
-                    </button>
-                    <p className="[font-family:'Inter',Helvetica] max-w-lg text-center text-xs sm:text-sm md:text-base font-medium leading-relaxed text-[#232323]">
-                      <span className="text-[#828282]">By contacting us, you agree to our</span>{" "}
-                      <span className="font-semibold text-[#212121]">Terms of Service</span>{" "}
-                      <span className="text-[#828282]">and</span>{" "}
-                      <span className="font-semibold text-[#212121]">Privacy Policy</span>
-                    </p>
-                  </div>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                      <Input placeholder="First Name *" value={first} onChange={(e) => setFirst(e.target.value)} />
+                      <Input placeholder="Last Name" value={last} onChange={(e) => setLast(e.target.value)} />
+                    </div>
+                    <Input
+                      placeholder="Your Email *"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Textarea
+                      placeholder="How can we help? *"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
+
+                    <div className="mt-2 sm:mt-3 flex flex-col items-center gap-3">
+                      <button
+                        type="submit"
+                        aria-label="Submit"
+                        className={`${ctaClasses} w-full`}
+                        disabled={isSending || !isValid}
+                        aria-busy={isSending}
+                      >
+                        <GlassLayers />
+                        <CtaLabel text={isSending ? "Sending…" : "Submit"} />
+                      </button>
+
+                      <p
+                        ref={noteRef}
+                        role="status"
+                        tabIndex={-1}
+                        className={cn(
+                          "[font-family:'Inter',Helvetica] max-w-lg text-center text-xs sm:text-sm md:text-base font-medium leading-relaxed",
+                          note.kind === "ok"
+                            ? "text-green-700"
+                            : note.kind === "err"
+                            ? "text-red-700"
+                            : "text-[#232323]"
+                        )}
+                      >
+                        {note.text ||
+                          "By contacting us, you agree to our Terms of Service and Privacy Policy."}
+                      </p>
+                    </div>
+                  </form>
                 </div>
               </div>
             </section>

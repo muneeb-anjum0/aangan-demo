@@ -4,6 +4,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import backgroundPattern from "../assets/waitlist/background-pattern.png";
 import emailIcon from "../assets/waitlist/email-icon.svg";
 
+// -------- API base (same pattern as Testimonials) --------
+const API_BASE = (import.meta as any).env?.VITE_API_BASE || "http://localhost:5000";
+
 type Note = { kind: "ok" | "err" | null; text: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,7 +51,13 @@ const WaitlistSection: React.FC = () => {
 
       try {
         setIsLoading(true);
-        // await fetch("/api/waitlist", { method: "POST", body: JSON.stringify({ email: value }) });
+        const res = await fetch(`${API_BASE}/api/waitlist`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: value }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         setEmail("");
         inputRef.current?.blur();
         setNote({ kind: "ok", text: "Thanks! You’re on the list." });
@@ -57,7 +66,7 @@ const WaitlistSection: React.FC = () => {
         setNote({ kind: "err", text: "Something went wrong. Please try again." });
         noteRef.current?.focus();
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // <- ensure the button resets
       }
     },
     [email, isLoading]
